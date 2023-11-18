@@ -1,0 +1,485 @@
+{% extends 'baseur.html' %}
+{% load static %}
+{% block content %}
+ <form action="bid_data" method="POST">
+    {% csrf_token %}
+    <div class="row text-center pt-3">
+{% if live %}
+    {% for i in live %}
+        <div class="col-lg-6 m-auto">
+            <div id="digital-clock"></div>
+            <h1 class="h1">Live Auction</h1>
+        </div>
+    </div>
+    <div class="row text-center ">
+        <div class="col-md-4 pt-5 bg-light">
+            <h2 class="h2 text-success border-bottom pb-3 border-light " id="name">{{ i.auction_name }}</h2>
+
+            <div class="text-center" id="product-image"><img src="{{ i.image_url }}" alt="{{ i.image_name }}"></div>
+            <div class="text-center" id="current-bid">Started bid: {{ i.start_price }}</div>
+            <div class="text-center" id="timer">30 minites left</div>
+        </div>
+
+        <div class="col-md-4 pt-5 bg-light">
+            <h2 class="h2 text-success border-bottom pb-3 border-light">Product discription</h2>
+            <p class="text-center text-center" id="discription" p>{{ i.description }}</p>
+            <label class="text-uppercase mb-3 text-center " for="bid-input">Enter bid</label><br>
+            <input class="text-center" type="text" name="bid-input" id="bid-input" placeholder="RS : ****"><br><br>
+            <input type="text" hidden value="{{i.id}}" name="id">
+            <button class="text-center" id="bid-button" onclick="placeBid()">Place Bid</button>
+            
+        </div>
+        
+        <div class="col-md-4 pt-5 bg-light">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="h2 text-success border-bottom pb-3 border-light text-center">Bidder</th>
+                        <th class="h2 text-success border-bottom pb-3 border-light text-center">Amount</th>
+                    </tr>
+                </thead>
+                {% for j in bid %}
+                <tbody id="bid-table">
+                    
+                    <td>{{ j.user }}</td><td>RS : {{ j.bid_amt }}</td><br>
+                    
+                </tbody>
+                
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
+{% else %}
+<div class="col-lg-6 m-auto">
+    <div id="digital-clock"></div>
+    <h1 class="h1">Live Auction</h1>
+    <h6 class="h1">Comming Soon</h6>
+</div>
+{% endif %}
+
+    </form>
+        <style type="text/css">
+            #auction {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 500px;
+
+            }
+
+            #product-image img {
+                width: 200px;
+                height: 200px;
+            }
+
+            #product-image img:hover {
+                transform: scale(1.05);
+            }
+
+            #bid-input {
+                width: 120px;
+
+            }
+
+            #bid-button {
+                width: 228px;
+                background-color: #333;
+                color: #fff;
+                border: none;
+                padding: 10px;
+                cursor: pointer;
+            }
+
+            #bid-button:hover {
+                background-color: #555;
+                transform: scale(1.05);
+
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+
+            }
+
+            th,
+            td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+        </style>
+    </div>
+    <script type="text/javascript">
+         function getDateTime() {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            var day = now.getDate();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+            var second = now.getSeconds();
+            if (month.toString().length == 1) {
+                month = '0' + month;
+            }
+            if (day.toString().length == 1) {
+                day = '0' + day;
+            }
+            if (hour.toString().length == 1) {
+                hour = '0' + hour;
+            }
+            if (minute.toString().length == 1) {
+                minute = '0' + minute;
+            }
+            if (second.toString().length == 1) {
+                second = '0' + second;
+            }
+            var dateTime = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+            return dateTime;
+        }
+    
+    setInterval(function() {
+    var currentTime = getDateTime();
+    document.getElementById("digital-clock").innerHTML = currentTime;
+    // document.getElementById("timer").innerHTML = ;
+    fetch('/newauction') // replace with your Django URL
+        .then(response => {
+            // handle the response from the Django URL here
+            console.log("API called");
+        })
+        .catch(error => {
+            // handle any errors that occur during the API call here
+            console.error(error);
+        });
+}, 1000);
+
+//         var currentAuctionId = null; // Keep track of the currently displayed auction
+// setInterval(function() {
+//     var currentTime = getDateTime();
+//     document.getElementById("digital-clock").innerHTML = currentTime;
+
+//     // Make a GET request to the API endpoint to get the list of upcoming auctions
+//     fetch('/api/upcoming_auctions/')
+//         .then(response => response.json())
+//         .then(data => {
+//             var liveAuction = null;
+//             var now = new Date();
+//             // Loop through the list of upcoming auctions
+//             data.forEach(auction => {
+//                 var auction_datetime = new Date(auction.date_time);
+//                 // Check if the auction is live
+//                 if (auction_datetime <= now && now < new Date(auction_datetime.getTime() + 30 * 60 * 1000)) {
+//                     liveAuction = auction;
+//                 }
+//             });
+//             // Display the live auction if there is one
+//             if (liveAuction) {
+//                 // Check if this is a new live auction, or if we're continuing to show the current one
+//                 if (currentAuctionId !== liveAuction.id) {
+//                     // Update the HTML elements with the relevant information for the new live auction
+//                     document.getElementById("product-image").innerHTML = "<img src='" + liveAuction.image_url + "' alt=''>";
+//                     document.getElementById("current-bid").innerHTML = "Current bid: " + liveAuction.current_bid;
+//                     document.getElementById("timer").innerHTML = "0:30:00";
+//                     document.getElementById("name").innerHTML = "Name: " + liveAuction.name;
+//                     document.getElementById("description").innerHTML = "Description: " + liveAuction.description;
+//                     // Set the current auction ID to the new auction's ID
+//                     currentAuctionId = liveAuction.id;
+//                 } else {
+//                     // Update the remaining time for the current live auction
+//                     var remainingTime = new Date(liveAuction.date_time).getTime() + 30 * 60 * 1000 - now.getTime();
+//                     var minutes = Math.floor(remainingTime / (60 * 1000));
+//                     var seconds = Math.floor((remainingTime - minutes * 60 * 1000) / 1000);
+//                     document.getElementById("timer").innerHTML = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+//                 }
+//             } else {
+//                 // No live auction is currently available, so clear the display
+//                 document.getElementById("product-image").innerHTML = "";
+//                 document.getElementById("current-bid").innerHTML = "";
+//                 document.getElementById("timer").innerHTML = "";
+//                 document.getElementById("name").innerHTML = "";
+//                 document.getElementById("description").innerHTML = "";
+//                 // Reset the current auction ID to null
+//                 currentAuctionId = null;
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//         });
+// }, 1000);
+
+// Get the timer element
+var timerEl = document.getElementById("timer");
+
+// Set the initial time
+var time = 30;
+
+// Update the timer every second
+var countdown = setInterval(function() {
+  // Decrease the time by 1
+  time--;
+
+  // Update the timer element with the new time
+  timerEl.innerHTML = time + "  minites left";
+
+  // If the time is up, stop the countdown
+  if (time == 0) {
+    clearInterval(countdown);
+    // Do something when the timer is up
+  }
+}, 10000);
+    
+  
+
+        function placeBid() {
+            var bidInput = document.getElementById("bid-input");
+            var bidAmount = parseInt(bidInput.value);
+
+            if (isNaN(bidAmount)) {
+                alert("Please enter a valid bid amount.");
+                return;
+            }
+
+            var currentBid = document.getElementById("current-bid");
+            var currentBidAmount = parseInt(currentBid.textContent.split(":")[1]);
+
+            if (bidAmount <= currentBidAmount) {
+                alert("Your bid must be higher than the current bid.");
+                return;
+            }
+
+            // update current bid
+            currentBid.textContent = "Current bid: RS" + bidAmount;
+
+
+            // // add bid to table
+            // var bidTable = document.getElementById("bid-table");
+            // var newRow = document.createElement("tr");
+            // newRow.innerHTML = "<td>You</td><td>RS" + bidAmount + "</td>";
+
+            // // sort table rows in descending order
+            // var rows = bidTable.rows;
+            // var insertBeforeRow;
+
+            // for (var i = 0; i < rows.length; i++) {
+            //     var rowAmount = parseInt(rows[i].cells[1].textContent.split("RS")[1]);
+            //     if (bidAmount > rowAmount) {
+            //         insertBeforeRow = rows[i];
+            //         break;
+            //     }
+            // }
+
+            // if (insertBeforeRow) {
+            //     bidTable.insertBefore(newRow, insertBeforeRow);
+            // } else {
+            //     bidTable.appendChild(newRow);
+            // }
+
+            // // clear bid input field
+            // bidInput.value = "";
+
+        }
+
+    </script>
+    </div>
+    <!-- Start Categories of The Month -->
+    <div class="row text-center pt-5">
+        <div class="col-lg-6 m-auto">
+            <h1 class="h1">Futured Auction</h1>
+        </div>
+    </div>
+    <section class="container py-5 bg-light">
+
+        <!--  [{'pr_name':'Iron_rod','pr_price':'100'},{'pr_name':'Iron','pr_price':'200'}] -->
+        <div class="row">
+            {% for i in upcoming %}
+            <div class="card">
+                <div class="card-details">
+                    <p class="text-title">{{ i.auction_name }}</p>
+                    <p class="text-body">{{ i.description }}</p>
+                    <div class="text-center" id="d">{{ i.date }}  </div>
+                    <div class="text-center" id="t">{{ i.time }}  </div>
+                </div>
+                <a href="auction?{{ i.id }}?commingSoon"> <button class="card-button">More info</button></a>
+            </div>
+            {% endfor %}
+        </div>
+
+
+    </section>
+    <div class="row text-center pt-5">
+        <div class="col-lg-6 m-auto">
+            <h1 class="h1">Completed Auction</h1>
+        </div>
+    </div>
+    <section class="container py-5 bg-light">
+        <div class="row">
+            {% for j in completed %}
+            <div class="card">
+                <div class="card-details">
+                    <p class="text-title">{{ j.auction_name }}</p>
+                    <p class="text-body">{{ j.description }}</p>
+                    <div class="text-center" id="d">{{ j.date }}</div>
+                    <div class="text-center" id="t">{{ j.time }}</div>
+                </div>
+                <a href="auction?{{ j.id }}?closed"> <button class="card-button">More info</button></a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+   
+    <style type="text/css">
+        .dropbtn {
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            border-radius: 5px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .card {
+            margin-bottom: 30px;
+            margin-left: 60px;
+            width: 190px;
+            height: 254px;
+            border-radius: 20px;
+            background: #f5f5f5;
+            position: relative;
+            padding: 1.8rem;
+            border: 2px solid #c3c6ce;
+            transition: 0.5s ease-out;
+            overflow: visible;
+
+        }
+
+        .card-details {
+            color: black;
+            height: 100%;
+            gap: .5em;
+            display: grid;
+            place-content: center;
+
+        }
+
+        .card-button {
+            transform: translate(-50%, 125%);
+            width: 60%;
+            border-radius: 1rem;
+            border: none;
+            background-color: #008bf8;
+            color: #fff;
+            font-size: 1rem;
+            padding: .5rem 1rem;
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            opacity: 0;
+            transition: 0.3s ease-out;
+        }
+
+        .text-body {
+            color: rgb(134, 134, 134);
+        }
+
+        /*Text*/
+        .text-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        /*Hover*/
+        .card:hover {
+            border-color: #008bf8;
+            box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+        }
+
+        .card:hover .card-button {
+            transform: translate(-50%, 50%);
+            opacity: 1;
+        }
+    </style>
+    <!-- End Categories of The Month -->
+
+    <div class="row py-4 bg-light mb-4 ">
+        <style>
+            .icons {
+                margin-top: 20px;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+
+
+            }
+
+            .icon {
+                width: 150px;
+                height: 150px;
+                background-color: #ccc;
+                border-radius: 20%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: #fff;
+                transition: transform 0.2s;
+                margin-left: 15px;
+            }
+
+            .icon:hover {
+                transform: scale(1.1);
+                color: white;
+            }
+
+            .icon.metal {
+                background-color: #999;
+            }
+
+            .icon.copper {
+                background-color: #964b00;
+            }
+
+            .icon.iron {
+                background-color: #212121;
+            }
+
+            .icon.plastic {
+                background-color: #00b8d4;
+            }
+        </style>
+
+
+    </div>
+    {% endblock %}

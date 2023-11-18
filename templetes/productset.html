@@ -1,0 +1,116 @@
+{% extends 'basead.html' %}
+
+{% block content %}
+
+    <div class="home-content">
+          <section id="product">
+
+            <form method="post" action="save_product" enctype="multipart/form-data">
+              {% csrf_token %}
+              <center>
+                <h2 class="heading">ADD PRODUCT</h2>
+              </center>
+              <center>
+                <h2 class="heading">{{ msg }}</h2>
+              </center>
+      
+              <div class="mb-3">
+                <label for="mimage" class="form-label">Product Name</label>
+                <input class="form-control" type="text" id="name" name="name">
+              </div>
+              <div class="file-upload">
+                <input type="file" id="image" name="image">
+                <button type="button" id="file-btn2" name="image">Choose File</button>
+                <span id="file-name2"></span>
+              </div>
+              <div class="mb-3">
+                <label for="mtitle" class="form-label">Description</label>
+                <input type="text" class="form-control" id="Description" name="Description" required>
+              </div>
+              <div class="mb-3">
+                <select class="form-select" name="category">
+                  <option selected value="default">Select Category</option>
+                  <option>iron</option>
+                  <option>Metal</option>
+                  <option>Copper</option>
+                  <option>plastic</option>
+                  <option>ALL</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="mnewcategory" class="form-label">Quantity</label>
+                <input type="text" class="form-control" id="Quantity" name="Quantity">
+              </div>
+              <div class="mb-3">
+                <label for="mnewcategory" class="form-label">Price</label>
+                <input type="text" class="form-control" id="price" name="price">
+              </div>
+              <button type="submit" class="btn btn-warning ">Save</button>
+            </form>
+            <h1>Hosted products</h1>
+            <table id="cart">
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Type</th>
+                <th>Action</th>
+              </tr>
+              {% for i in products %}
+              <tr>
+                <td>{{ i.name }}</td>
+                <td>{{ i.price }}</td>
+      
+                <td class="item-total">{{ i.description }}</td>
+                <td><button class="remove-item-btn"><a href="remove_product?{{i.id}}"
+                      style="text-decoration: none; color: white;"> Remove</a></button>
+                </td>
+              </tr>
+              {% endfor %}
+              
+            </table>
+            <h1>Pending products</h1>
+            <table id="cart">
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Type</th>
+                <th>Action</th>
+              </tr>
+              {% for i in pending %}
+              <tr>
+                <td>{{ i.name }}</td>
+                <td>{{ i.price }}</td>
+      
+                <td class="item-total">{{ i.description }}</td>
+                <td><button class="remove-item-btn"><a href="remove_product?{{i.id}}"
+                      style="text-decoration: none; color: white;"> Reject</a></button>
+                </td>
+                <td><button class="remove-item-btn"><a href="accept_product?{{i.id}}"
+                  style="text-decoration: none; color: white;"> Accept</a></button>
+            </td>
+              </tr>
+              {% endfor %}
+              
+            </table>
+          </section>
+           
+      
+<script>
+		const fileInput = document.getElementById("image");
+		const fileBtn = document.getElementById("file-btn");
+		const fileName = document.getElementById("file-name");
+
+		fileBtn.addEventListener("click", function() {
+			fileInput.click();
+		});
+
+		fileInput.addEventListener("change", function() {
+			if (fileInput.value) {
+				fileName.textContent = fileInput.files[0].name;
+			} else {
+				fileName.textContent = "";
+			}
+		});
+	</script>
+
+{% endblock %}

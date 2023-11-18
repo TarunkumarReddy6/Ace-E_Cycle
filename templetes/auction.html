@@ -1,0 +1,361 @@
+{% extends 'baseur.html' %}
+{% load static %}
+{% block content %}
+
+
+    <!-- Open Content -->
+    <section class="bg-light">
+        <div class="container pb-4">
+            <div class="row">
+                <div class="col-lg-4 mt-5">
+                    {% for i in oneauction %}
+                    <div class="card mb-4">
+                        <img class="card-img img-fluid" src="{{ i.image_url }}" alt="Card image cap" id="product-detail" style="height: 450px;">
+                    </div>
+                  
+                </div><!-- col end -->
+                <div class="col-lg-7 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h1 class="h1 text-center">Auction </h1>
+                            
+                            <div class="text-center" id="">{{ i.datetime }}</div>
+
+                            <h1 class="h2 text-center">{{ i.auction_name }}</h1>
+
+                            <div class="h2 text-center" id="current-bid">Bid started with: {{ i.start_price }}</div>
+                            
+                            <ul class="list-inline">
+                                <li class="list-inline-item">
+                                    <h6>Type:</h6>
+                                </li>
+                                <li class="list-inline-item">
+                                    <p class="text-muted"><strong>{{ i.category }}</strong></p>
+                                </li>
+                            </ul>
+
+                            <h6>Description:</h6>
+                            <p>{{ i.description }}</p>
+                            <ul class="list-inline">
+                                <li class="list-inline-item">
+                                    <h6>Avaliable Quantity :</h6>
+                                </li>
+                                <li class="list-inline-item">
+                                    <p class="text-muted"><strong> {{ i.quantity }} KG</strong></p>
+                                </li>
+                            </ul>
+                            <div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="h2 text-success border-bottom pb-3 border-light text-center">Bidder</th>
+                                            <th class="h2 text-success border-bottom pb-3 border-light text-center">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    {% for j in bid %}
+                                    <tbody id="bid-table">
+                                        
+                                        <td style="text-align: center;">{{ j.user }}</td><td style="text-align: center;">RS : {{ j.bid_amt }}</td><br>
+                                        
+                                    </tbody>
+                                    
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            
+                            {% endfor %}
+                            <h1 class="h2 text-center">{{ msg }}</h1>
+                            
+    
+                            <!-- <table>
+        <thead>
+            <tr>
+                <th class="h2 text-success border-bottom pb-3 border-dark text-center">Bidder</th>
+                <th class="h2 text-success border-bottom pb-3 border-dark text-center">Amount</th>
+            </tr>
+        </thead>
+        <tbody id="bid-table">
+        </tbody>
+    </table>
+              <label class="text-uppercase " for="bid-input">Enter bid</label><br>
+                 -->
+
+                        
+                                
+                                <!-- <div class="row pb-2">
+                                    <div class="col d-grid">
+                                        <input  class="text-center" type="text" id="bid-input" placeholder="RS000"><br><br>  
+                                    </div>
+                                    <div class="col d-grid">
+                                        <button class="text-center" id="bid-button" onclick="placeBid()">Place Bid</button>
+                                    </div>
+                                </div>
+                         -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Close Content -->
+
+    
+    <!-- Start Footer -->
+    <footer class="bg-dark" id="tempaltemo_footer">
+        
+
+            <div class="row text-light mb-4">
+                
+                <div class="col-auto me-auto " style="margin-top: 40px;">
+                    <ul class="list-inline text-left footer-icons">
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="http://facebook.com/"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="https://www.instagram.com/"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="https://twitter.com/"><i class="fab fa-twitter fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="https://www.linkedin.com/"><i class="fab fa-linkedin fa-lg fa-fw"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-auto" style="margin-top: 40px; ">
+                    <label class="sr-only" for="subscribeEmail">Email address</label>
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control bg-dark border-light" id="subscribeEmail" placeholder="Email address">
+                        <div class="input-group-text btn-success text-light">Subscribe</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-100 bg-black py-3">
+            <div class="container">
+                <div class="row pt-2">
+                    <div class="col-12">
+                        <p class="text-left text-light text-center">
+                            Copyright &copy; 2023  
+                            | Designed by <a rel="sponsored" href="https://templatemo.com" target="_blank">Tarun & Nayeem</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+    <!-- End Footer -->
+
+    <!-- Start Script -->
+    <script src="{% static 'assets/js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery-migrate-1.2.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/templatemo.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <!-- End Script -->
+
+    <!-- Start Slider Script -->
+    <script src="assets/js/slick.min.js"></script>
+    <script>
+        $('#carousel-related-product').slick({
+            infinite: true,
+            arrows: false,
+            slidesToShow: 4,
+            slidesToScroll: 3,
+            dots: true,
+            responsive: [{
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 3
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 3
+                    }
+                }
+            ]
+        });
+    </script>
+    <!-- End Slider Script -->
+
+<style type="text/css">
+    .dropbtn {
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  border-radius: 5px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+#auction {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+
+}
+
+#product-image img {
+    width: 200px;
+    height: 200px;
+}
+
+#product-image img:hover {
+    transform: scale(1.05);
+  }
+
+#bid-input {
+    width: 120px;
+    
+}
+#bid-button{
+    width: 228px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#bid-button:hover {
+    background-color: #555;
+    transform: scale(1.05);
+
+  }
+table {
+    border-collapse: collapse;
+    width: 100%;
+
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+</style>
+</div>
+<script type="text/javascript">
+ var targetDate = new Date("Jan 10, 2023 00:00:00").getTime();
+  
+
+setInterval(function () {
+          // Get the current date and time
+      var currentDate = new Date().getTime();
+
+      // Calculate the time remaining until the target date and time
+      var timeRemaining = targetDate - currentDate;
+
+
+      // Calculate the number of days, hours, minutes, and seconds remaining
+      var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+
+    document.getElementById("timer").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+}, 1000);
+
+function placeBid() {
+    var bidInput = document.getElementById("bid-input");
+    var bidAmount = parseInt(bidInput.value);
+
+    if (isNaN(bidAmount)) {
+        alert("Please enter a valid bid amount.");
+        return;
+    }
+
+    var currentBid = document.getElementById("current-bid");
+    var currentBidAmount = parseInt(currentBid.textContent.split("RS")[1]);
+
+    if (bidAmount <= currentBidAmount) {
+        alert("Your bid must be higher than the current bid.");
+        return;
+    }
+
+    // update current bid
+    currentBid.textContent = "Current bid: RS" + bidAmount;
+
+   
+// add bid to table
+var bidTable = document.getElementById("bid-table");
+var newRow = document.createElement("tr");
+newRow.innerHTML = "<td>You</td><td>RS" + bidAmount + "</td>";
+
+// sort table rows in descending order
+var rows = bidTable.rows;
+var insertBeforeRow;
+
+for (var i = 0; i < rows.length; i++) {
+    var rowAmount = parseInt(rows[i].cells[1].textContent.split("RS")[1]);
+    if (bidAmount > rowAmount) {
+        insertBeforeRow = rows[i];
+        break;
+    }
+}
+
+if (insertBeforeRow) {
+    bidTable.insertBefore(newRow, insertBeforeRow);
+} else {
+    bidTable.appendChild(newRow);
+}
+
+// clear bid input field
+bidInput.value = "";
+
+}
+
+</script>
+        
+        
+        
+{% endblock %}

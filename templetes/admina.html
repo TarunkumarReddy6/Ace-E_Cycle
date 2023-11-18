@@ -1,0 +1,66 @@
+{% extends 'basead.html' %}
+
+{% block content %}
+<div class="home-content">
+  <div class="overview-boxes">
+    <div class="box">
+      <div class="right-side">
+        <div class="box-topic">Total Order</div>
+        <div class="number">{{ productsLen }}</div>
+        <div class="indicator">
+          <i class='bx bx-up-arrow-alt'></i>
+          <span class="text">Up from yesterday</span>
+        </div>
+      </div>
+      <i class='bx bx-cart-alt cart'></i>
+    </div>
+    <div class="box">
+      <div class="right-side">
+        <div class="box-topic">Users</div>
+        <div class="number">{{ userslen }}</div>
+        <div class="indicator">
+          <i class='bx bx-up-arrow-alt'></i>
+          <span class="text">Up from yesterday</span>
+        </div>
+      </div>
+      <i class='bx bxs-cart-add cart two'></i>
+    </div>
+    <div class="box">
+      <div class="right-side">
+        <div class="box-topic">Accept Orders</div>
+        <div class="number">{{ ordersLen }}</div>
+        <div class="indicator">
+          <i class='bx bx-up-arrow-alt'></i>
+          <span class="text">Up from yesterday</span>
+        </div>
+      </div>
+      <i class='bx bx-cart cart three'></i>
+    </div>
+  </div>
+
+  <div class="sales-boxes" style="display: flex; justify-content: center;">
+    <div class="recent-sales box">
+      <div class="title" style="text-align: center; font-weight: bold; font-size: 30px; color: green">Recent Sales</div>
+      
+      <table id="sales">
+        <tr>
+          <th>Customer</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+        {% for i in orders %}
+        <tr>
+          <td>{{ i.customer_id }}</td>
+          <td>{{ i.quantity }}</td>
+          <td>{{ i.price }}</td>
+          <td>{{ i.total }}</td>
+        </tr>
+
+        {% endfor %}
+        
+      </table>
+    </div>
+  </div>
+  </section>
+  {% endblock %}
